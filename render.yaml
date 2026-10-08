@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: studylens-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: CORS_ORIGINS
+        value: '["*"]'
+      - key: OLLAMA_BASE_URL
+        value: https://ollama.com
+      - key: OLLAMA_MODEL
+        value: nemotron-3-nano:30b-cloud
+      - key: OLLAMA_TIMEOUT_SECONDS
+        value: "60.0"
+      - key: OLLAMA_API_KEY
+        sync: false

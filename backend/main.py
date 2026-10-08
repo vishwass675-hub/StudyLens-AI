@@ -4,6 +4,12 @@ FastAPI application entrypoint with centralized routing, OpenAPI documentation,
 structured logging middleware, and error taxonomy handlers.
 """
 
+import sys
+from pathlib import Path
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -57,11 +63,14 @@ app = FastAPI(
 app.add_middleware(RequestLoggingMiddleware)
 
 # CORS Middleware configured for frontend integration
+cors_origins = settings.CORS_ORIGINS
+allow_all = "*" in cors_origins or len(cors_origins) == 0
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_origins=["*"] if allow_all else cors_origins,
+    allow_credentials=False if allow_all else True,
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
